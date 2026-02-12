@@ -1,0 +1,28 @@
+# Netlify Configuration for Mission Control
+# Uses Next.js runtime
+
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+# Next.js plugin for Netlify
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+# Environment variables (set these in Netlify dashboard)
+[build.environment]
+  NODE_VERSION = "20"
+
+# Headers for security
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+# Redirects for SPA fallback (handled by Next.js)
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/___netlify-handler/:splat"
+  status = 200

@@ -1,108 +1,123 @@
-# BOTS
+# BOTS - AI Mission Control
 
-A project deployed on Netlify with GitHub integration for continuous deployment.
+A central command center for managing AI agents. Talk to one main orchestrator that intelligently routes your requests to specialized sub-agents.
 
-## Netlify Setup Instructions
+## Features
 
-### Option 1: Deploy via Netlify Dashboard (Recommended)
-
-1. Go to [Netlify](https://app.netlify.com/)
-2. Click **"Add new site"** → **"Import an existing project"**
-3. Select **GitHub** as your Git provider
-4. Authorize Netlify to access your GitHub account
-5. Select the `jordannassie/BOTS` repository
-6. Configure build settings:
-   - **Build command:** Leave empty (or add your build command if needed)
-   - **Publish directory:** `public`
-7. Click **"Deploy site"**
-
-### Option 2: Deploy via Netlify CLI
-
-1. Install Netlify CLI:
-   ```bash
-   npm install -g netlify-cli
-   ```
-
-2. Login to Netlify:
-   ```bash
-   netlify login
-   ```
-
-3. Initialize and link the project:
-   ```bash
-   netlify init
-   ```
-
-4. Deploy:
-   ```bash
-   netlify deploy --prod
-   ```
+- **Main Orchestrator Agent**: Central AI that understands your requests and delegates to specialists
+- **Specialized Sub-Agents**:
+  - **Programmer**: Code writing, debugging, software architecture
+  - **Social Media**: Content creation, marketing strategies
+  - **Web Developer**: Frontend, backend, full-stack development
+- **Multi-Provider Support**: OpenAI, Claude (Anthropic), and Ollama (local LLMs)
+- **Real-time Dashboard**: Live agent status, chat interface, metrics
+- **Modern UI**: Dark theme, responsive design, smooth animations
 
 ## Project Structure
 
 ```
 BOTS/
-├── netlify.toml      # Netlify configuration
-├── public/           # Static files to deploy
-│   └── index.html    # Main landing page
-└── README.md         # This file
+├── mission-control/          # Next.js Mission Control app
+│   ├── src/
+│   │   ├── app/             # Next.js App Router + API routes
+│   │   ├── components/      # React components
+│   │   ├── hooks/           # Custom React hooks
+│   │   ├── lib/             # Core logic (agents, providers)
+│   │   └── store/           # Zustand state management
+│   ├── package.json
+│   └── README.md            # Detailed documentation
+├── public/                   # Static landing page
+│   └── index.html
+├── netlify.toml             # Netlify configuration
+└── README.md                # This file
 ```
 
-## Configuration
+## Quick Start
 
-The `netlify.toml` file contains:
-- **Build settings** - Publish directory and build commands
-- **Redirects** - SPA-style routing support
-- **Headers** - Security headers and caching rules
-- **Environment contexts** - Production/preview environment variables
-
-## Continuous Deployment
-
-Once connected to GitHub:
-- Every push to `main` triggers a production deployment
-- Pull requests get automatic deploy previews
-- Branch deploys are available for testing
-
-## Local Development
-
-Run a local development server with Netlify Dev:
+### 1. Install Dependencies
 
 ```bash
-netlify dev
+cd mission-control
+npm install
 ```
 
-This simulates the Netlify environment locally on port 8888.
+### 2. Configure Environment
 
-## Adding More Features
-
-### Netlify Functions (Serverless)
-
-Create a `netlify/functions` directory and add JavaScript/TypeScript files:
-
-```javascript
-// netlify/functions/hello.js
-export const handler = async (event, context) => {
-  return {
-    statusCode: 200,
-    body: JSON.stringify({ message: "Hello from Netlify Functions!" })
-  };
-};
+```bash
+cp .env.example .env.local
 ```
 
-Access at: `/.netlify/functions/hello`
+Add your API keys to `.env.local`:
 
-### Environment Variables
+```env
+OPENAI_API_KEY=sk-your-openai-key
+ANTHROPIC_API_KEY=sk-ant-your-anthropic-key
+```
 
-Add environment variables in Netlify Dashboard:
-1. Go to **Site settings** → **Environment variables**
-2. Add your variables (they'll be available during build)
+### 3. Run Development Server
 
-## Resources
+```bash
+npm run dev
+```
 
-- [Netlify Documentation](https://docs.netlify.com/)
-- [netlify.toml Reference](https://docs.netlify.com/configure-builds/file-based-configuration/)
-- [Netlify Functions](https://docs.netlify.com/functions/overview/)
-- [Deploy Previews](https://docs.netlify.com/site-deploys/deploy-previews/)
+Open [http://localhost:3000](http://localhost:3000)
+
+## Deployment
+
+### Netlify (Recommended for Mission Control)
+
+1. Go to [Netlify](https://app.netlify.com/)
+2. Import the repository
+3. Set build settings:
+   - **Base directory**: `mission-control`
+   - **Build command**: `npm run build`
+   - **Publish directory**: `mission-control/.next`
+4. Add environment variables in Netlify dashboard
+5. Deploy!
+
+### Vercel
+
+```bash
+cd mission-control
+npx vercel
+```
+
+## Adding New Agents
+
+Create a new agent by extending `BaseAgent`:
+
+```typescript
+// mission-control/src/lib/agents/my-agent.ts
+import { BaseAgent } from './base';
+
+export class MyAgent extends BaseAgent {
+  constructor() {
+    super({
+      id: 'my_agent',
+      name: 'My Custom Agent',
+      description: 'What this agent does',
+      systemPrompt: `Your agent's personality...`,
+      provider: 'openai',
+      capabilities: ['skill1', 'skill2'],
+    });
+  }
+  
+  canHandle(input: string): boolean {
+    return input.toLowerCase().includes('my keyword');
+  }
+}
+```
+
+Register in `src/lib/agents/index.ts`.
+
+## Tech Stack
+
+- **Framework**: Next.js 14 (App Router)
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS
+- **State**: Zustand
+- **LLM SDKs**: OpenAI, Anthropic
+- **Icons**: Lucide React
 
 ## License
 

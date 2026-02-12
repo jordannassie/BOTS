@@ -1,20 +1,17 @@
-# Netlify Configuration
+# Netlify Configuration for BOTS - Mission Control
 # https://docs.netlify.com/configure-builds/file-based-configuration/
 
 [build]
-  # Directory to publish (where your built files are)
-  publish = "public"
-  
-  # Build command (optional - uncomment if you have a build step)
-  # command = "npm run build"
+  # Build the Next.js app in mission-control folder
+  base = "mission-control"
+  command = "npm run build"
+  publish = ".next"
 
-# Redirects and rewrites
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
+# Next.js plugin for Netlify
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
 
-# Headers for security and caching
+# Headers for security
 [[headers]]
   for = "/*"
   [headers.values]
@@ -23,30 +20,11 @@
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
 
+# Static asset caching
 [[headers]]
-  for = "/*.css"
+  for = "/_next/static/*"
   [headers.values]
-    Cache-Control = "public, max-age=31536000"
-
-[[headers]]
-  for = "/*.js"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000"
-
-[[headers]]
-  for = "/*.png"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000"
-
-[[headers]]
-  for = "/*.jpg"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000"
-
-[[headers]]
-  for = "/*.svg"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000"
+    Cache-Control = "public, max-age=31536000, immutable"
 
 # Environment-specific settings
 [context.production]
@@ -60,6 +38,7 @@
 
 # Dev server settings (for netlify dev)
 [dev]
+  command = "npm run dev"
   port = 8888
   targetPort = 3000
   autoLaunch = false
